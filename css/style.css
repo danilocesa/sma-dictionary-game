@@ -1,0 +1,271 @@
+ /*@import url(https://fonts.googleapis.com/css?family=Oxygen);*/
+ *:focus {
+     outline: none;
+ }
+ #main-content{
+     position:relative;
+     width: 550px;
+     height: 650px;
+     margin: 0 auto;
+ }
+canvas {
+     /*margin: 0 auto;*/
+     background-repeat: no-repeat;
+     -webkit-background-size: cover;
+     -moz-background-size: cover;
+     -o-background-size: cover;
+     background-size: cover;
+     overflow: hidden;
+     padding-left: 0;
+     padding-right: 0;
+     margin-left: auto;
+     margin-right: auto;
+     position: absolute;
+     top: 0;
+     z-index: -1;
+ }
+ .main-with-bg {
+     background-image: url('../images/bg-login-min.png');
+ }
+ #black-screen {
+     position: absolute;
+     background: #000;
+     width: 550px;
+     height: 650px;
+     opacity: 0.9;
+     top: 0;  
+ }
+ #logo {
+     width: 315px;
+     height: 210px;
+     margin: 0 auto;
+     z-index: 10;
+     overflow: hidden;
+     margin-left: 110px;
+     position: absolute;
+     top: 20px;
+ }
+ #logo img {
+     width: 230px;
+     margin-left: 50px;
+     position: relative;
+ }
+ #login-forms {
+     margin: 0 auto;
+     width: 255px;
+     height: 300px;
+     z-index: 10;
+     position: relative;
+     top: 200px;
+ }
+ #login-forms form {
+     margin: 0 auto;
+     position: relative;
+ }
+ .login-input {
+     padding-bottom: 10px;
+ }
+ .login-input input {
+     height: 40px;
+     border: 5px solid black;
+     display: block;
+     -moz-border-radius: 10px;
+     -webkit-border-radius: 10px;
+     -o-border-radius: 10px;
+     border-radius: 10px;
+     font-size: 20px;
+     padding-left:10px;
+ }
+ .login-input input:hover {
+     border: 5px solid #31bc54;
+ }
+ .login-input label {
+     font-size: 2em;
+     display: block;
+     color: white;
+     text-align: center;
+     font-family: 'Oxygen', sans-serif;
+ }
+ .login-submit {
+     margin-left: 45px;
+     margin-top: 10px;
+     cursor: pointer;
+ }
+ .login-submit img {
+     width: 155px;
+ }
+ .login-reg-text{
+     color:#fff;
+     font-family: 'Oxygen', sans-serif;
+     text-align:center;
+     border-bottom:1px solid #fff;
+ }
+ .login-reg-text a{
+     color:#fff;
+ }
+ #login-errors{font-size: 16px;color:#f00;text-align:center;margin: 0 auto;display:none;}
+#register-forms{
+   margin: 0 auto;
+   width: 480px;
+   height: 300px;
+   z-index: 10;
+   position: relative;
+   top: 200px;
+   display:none;
+ }
+ #register-forms form{
+   margin:0 auto;
+   position:relative;
+ }
+ .register-input{
+   padding: 0 10px;
+   display:block;
+   margin-bottom:8px;
+   height:40px;
+ }
+.register-input input{
+   height:30px;
+   border:5px solid black;
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
+   -o-border-radius: 10px;
+   border-radius: 10px;
+   font-size: 18px;
+   float:right;
+   padding-left:5px;
+}
+.register-input input:hover{
+     border:5px solid #31bc54;
+}
+.register-input label{
+   font-size: 1.5em;
+   color:white;
+   text-align:center;
+   font-family: 'Oxygen', sans-serif;
+   float:left;
+}
+.register-input select{
+   height:40px;
+   border:5px solid black;
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
+   -o-border-radius: 10px;
+   border-radius: 10px;
+   font-size: 18px;
+   float:right;
+   width:233px;
+   background: url('../images/br_down.png') no-repeat #fff;
+   -webkit-appearance: none;
+   background-position-x: 195px;
+   background-position-y: 6px;
+   padding: 5px;
+}
+/*Register Button*/
+.register-btn{
+   width: 100%;
+}
+.register-submit{
+   position: absolute;
+   cursor: pointer;
+   width: 50%;
+   right: 0;
+   text-align: center;
+}
+.register-submit img{
+   width:155px;
+}
+.register-cancel{
+   position: absolute;
+   cursor: pointer;
+   width: 50%;
+   left: 0;
+   text-align: center;
+}
+.register-cancel img{
+   width:155px;
+}
+/*End Register Button*/
+/*Checkbox Style*/
+.register-input .checkbox-container {
+ width: 25px;
+ position: relative;
+}
+.register-input .checkbox-container label {
+      cursor: pointer;
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      top: 0;
+      left:228px;
+      background: white;
+      border:5px solid black;
+}
+.register-input .checkbox-container label:after {
+ opacity: 0.2;
+ content: '';
+ position: absolute;
+ width: 12px;
+ height: 5px;
+ background: transparent;
+ top: 6px;
+ left: 5px;
+ border: 4px solid black;
+ border-top: none;
+ border-right: none;
+ -webkit-transform: rotate(-45deg);
+ -moz-transform: rotate(-45deg);
+ -o-transform: rotate(-45deg);
+ -ms-transform: rotate(-45deg);
+ transform: rotate(-45deg);
+}
+.register-input .checkbox-container label:hover::after {opacity: 0.5;}
+.register-input .checkbox-container label:hover {border:5px solid #31bc54;}
+.register-input .checkbox-container input[type=checkbox]:checked + label:after {opacity: 1;}
+.register-input .checkbox-container input[type=checkbox]{visibility: hidden;position: absolute;
+    width: 35px;
+    height: 35px;
+    top: 0;
+    left: 228px;}
+#register-show {cursor: pointer;}
+#registration-dialog{
+    z-index: 10;
+    position: relative;
+    width: 415px;
+    height: 270px;
+    top: 130px;
+    margin: 0 auto;
+    display:none;
+}
+
+#registration-dialog img{
+    width: 415px;
+}
+
+.regButton{
+    position: relative;
+    top: -74px;
+    height: 100px;
+    width: 100px!important;
+    left: 160px;
+    cursor:pointer;
+}
+#regSuccessDialog{display: none;}
+#regExistsDialog{display: none;}
+#regSuccesButton{display: none;}
+#regExistsButton{display: none;}
+
+
+.error-message{
+  font-size: 12px;
+  color: red;
+  width: 220px;
+  position: relative;
+  right: 0;
+  top: -16px;
+  font-style: italic;
+  display:inline-block;
+}
+
+#form-holder{
+  display:none;
+}

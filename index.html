@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="author" content="Fountainhead">
+    <meta name="description" content="Social Media Analytics - Dictionary">
+    <meta name="keywords" content="SMA,Halo Halo, Dictionary,Social,Sentiment">
+    <title>Halo Halo</title>
+    <link rel="stylesheet" href='css/normalize.css'>  
+    <link rel="stylesheet" href='css/style.css'>
+    <script src='js/form2js.js'></script>
+    <script src='js/callAjax.js'></script>
+    <script src='js/phaser.min.js'></script>
+    <script src='js/master.js'></script>
+    <script src='js/mainscreen.js'></script>
+    <script src='js/playload.js'></script>
+    <script src='js/playscreen.js'></script>
+    <script src='js/directtranslate.js'></script>
+    <script src='js/leaderboard.js'></script>
+    <script src='js/main.js'></script>
+    
+  </head>
+  <body>
+    <div id="main-content">
+      <div id="form-holder">
+        <div id="logo">
+          <img src="images/tropicalv2-min.png" />
+        </div>
+        <div id="login-forms">
+          <div id="login-errors">
+            <p>Incorrect Username or Password</p>
+          </div>
+          <form id="login-form">
+            <input type="hidden" name="_token" value="" /> 
+            <div class="login-input">
+              <label for="username" >Username</label>
+              <input type="text" name="username" />
+            </div>
+            <div class="login-input">
+              <label for="password" >Password</label>
+              <input type="password" name="password" />
+            </div>
+            <div class="login-reg-text">
+              <p>New User? <span id="register-show"><u>Register Here</u></span> </p>
+            </div>
+            <div class="login-submit">
+              <img src='images/login-min.png' id="submit-login" />
+            </div>
+          </form>
+        </div>
+        <div id="register-forms" >
+          <form id="register-form" name="register-forms">
+            <input type="hidden" name="_token" value="" /> 
+            <div class="register-input">
+              <label for="username" >Username</label>
+              <input type="text" name="username" placeholder="Username" tabindex="1" />
+              <p class="error-message"></p>
+            </div>
+            <div class="register-input">
+              <label for="password" >Password</label>
+              <input type="password" name="password" tabindex="2" />
+              <p class="error-message"></p>
+            </div>
+            <div class="register-input">
+              <label>Confirm Password</label>
+              <input type="password" name="password_confirmation" tabindex="3" />
+              <p class="error-message"></p>
+            </div>
+            <div class="register-input">
+              <label>Email Address</label>
+              <input type="email" name="email" placeholder="halo_halo@fh.com" tabindex="4" />
+              <p class="error-message"></p>
+            </div>
+            <div class="register-input">
+              <label>Dialect Spoken</label>
+              <select name="dialect" id="dialect_select" tabindex="5">
+                <option value="">Please select</option>
+              </select>
+              <p class="error-message"></p>
+            </div>
+            <div class="register-input">
+              <label>Terms & Conditions</label>
+              <div class="checkbox-container">
+                <input type="checkbox" value="1" id="checkboxInput" name="terms_con" tabindex="6" />
+                <label for="checkboxInput"></label>
+                <p class="error-message"></p>
+              </div>
+            </div>
+            <div class="register-btn">
+              <div class="register-cancel">
+                <img src="images/cancel.png" id="register-cancel" />
+              </div>
+              <div class="register-submit" >
+                <img src="images/register-min.png" id="submit-register" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div id="registration-dialog">
+          <img src="images/success_registration.png" id="regSuccessDialog" />
+          <img src="images/account_exists.png" id="regExistsDialog" />
+          <img src="images/okay_green.png" id="regSuccesButton" class="regButton" />
+          <img src='images/okay_blue.png' id="regExistsButton" class="regButton" />
+        </div>
+        <div id="black-screen"></div>
+      </div>   
+    </div>
+    <!-- <audio  autoplay="" controls="" loop="" preload="" style="display:none;">
+      <source src="{{ asset('audio/bg_sound.mp3') }}" type="audio/mpeg">
+    Your browser does not support the audio element.
+    </audio> -->
+    
+  </body>
+</html>
