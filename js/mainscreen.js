@@ -30,6 +30,8 @@ MainScreen.prototype = {
         this.load.json('getDialects', jsonUrl+'getDialects');
         this.load.json('getUserInfo', jsonUrl+'getUserInfo/user');
         this.load.json('arcadeInfo', jsonUrl+'getUserInfo/arcade');
+        this.load.json('getTopPlayers', jsonUrl+'topPlayers');
+        this.load.json('playerStats', jsonUrl+'getStats');
         
     },
 
