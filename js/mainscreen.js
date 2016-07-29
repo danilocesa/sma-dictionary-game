@@ -4,45 +4,13 @@ var logoSprite, playButton,leaderButton, settingsButton, exitButton, blackscreen
     MainScreen = function() {};
 
 MainScreen.prototype = {
-     preload : function() {
-        this.load.onLoadComplete.add(function() {    
-            getDialects = this.cache.getJSON('getDialects'); 
-            getUserInfo = this.cache.getJSON('getUserInfo'); 
-            if(getUserInfo == null){
-                game.state.restart();
-            }
-        }, this);
-     
-        this.load.image('logo', './images/tropicalv2-min.png');
-        this.load.image('playButton', './images/play.png');
-        this.load.image('mainBG', './images/main_bg.png');
-        this.load.image('settingsButton', './images/settings.png');
-        this.load.image('exitButton', './images/exit_red.png');
-        this.load.image('exitPopUp', './images/exit_popup.png');
-        this.load.image('blackscreen', './images/blackscreen.jpg');
-        this.load.image('okayGreen', './images/okay_green.png');
-        this.load.image('settingsPopup', './images/settings_popup.png');
-        this.load.image('musicSlider','./images/music_slider.png');
-        this.load.image('musicSlideButton','./images/music_slide_button.png');
-        this.load.image('leaderBoard','./images/leaderboard.png');
-        this.load.image('directButton','./images/direct_button.png');
-        game.load.audio('bgMusic','./audio/bg_sound.mp3');
-        this.load.json('getDialects', jsonUrl+'getDialects');
-        this.load.json('getUserInfo', jsonUrl+'getUserInfo/user');
-        this.load.json('arcadeInfo', jsonUrl+'getUserInfo/arcade');
-        this.load.json('getTopPlayers', jsonUrl+'topPlayers');
-        this.load.json('playerStats', jsonUrl+'getStats');
-        
+     preload : function() {   
+        getDialects = this.cache.getJSON('getDialects'); 
+        getUserInfo = this.cache.getJSON('getUserInfo'); 
     },
 
     create: function () {
-        // if(bgMusic == 'undefined' || bgMusic == null){
-        //     bgMusic = game.add.audio('bgMusic');
-        //     bgMusic.play();
-        //     bgMusic.volume = bgMusicVol ? bgMusicVol : 1;
-        // }
-        
-        
+
         //Add Background Image
         this.add.sprite(0, 0, 'mainBG');
         //Add logo
@@ -189,6 +157,7 @@ MainScreen.prototype = {
 
     /** Show settings dialog popup **/
     setGame: function () {
+        directButton
         if ((tweenSettings !== null && tweenSettings.isRunning) || settingsPopup.scale.x === 1)
         {
             return;

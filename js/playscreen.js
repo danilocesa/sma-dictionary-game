@@ -1,14 +1,8 @@
-var backButton,level = 1,arcadeInfo,levelText,jumbleWordsGroup,sentiGroup,gameState = null,continueButton,dialectText,sentiButton,checkback = 0,
+var backButton,level = 1,arcadeInfo,levelText,jumbleWordsGroup,sentiGroup,gameState = null,continueButton,dialectText,sentiButton = 2,checkback = 0,
 	PlayScreen = function(){};
 
 PlayScreen.prototype = {
 	preload : function() {
-		this.load.image('backButton', './images/back.png');
-		this.load.image('board', './images/board.png');
-		this.load.image('plus', './images/plus.png');
-		this.load.image('minus', './images/minus.png');
-		this.load.image('submit', './images/submit.png');
-		this.load.image('continue', './images/continue.png');
 		arcadeInfo = this.cache.getJSON('arcadeInfo'); 	
 		this.load.image('mapBG', './images/arcades/'+arcadeInfo.arcade_map);
 	},
@@ -19,6 +13,7 @@ PlayScreen.prototype = {
 			game.state.restart();
 		}
 
+		console.log(arcadeInfo);
 		this.add.sprite(0, 0, 'mapBG');// Add background
 
 		backButton = this.add.button(10, 5, 'backButton',this.backMain);
@@ -134,6 +129,7 @@ PlayScreen.prototype = {
 	},
 	savePlay: function(){
 		if(document.getElementById('inputPlay').value != ''){
+
 			if(gameState != 'translate'){
 				//Check jumblewords
 				if(document.getElementById('inputPlay').value.toLowerCase() == arcadeInfo.synset_terms.toLowerCase() ){ //Correct Word
@@ -150,24 +146,22 @@ PlayScreen.prototype = {
 	        		var successWords = game.add.text(game.world.centerX - 125, 100, "You've guessed the word.", { font: "bold 22px Arial", fill: "#fff", align:"left"});
 	        		var correctText = game.add.text(game.world.centerX - 65, 250, arcadeInfo.synset_terms, { font: "bold 58px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
 	        		var continueText = game.add.text(game.world.centerX - 165, game.world.centerY + 150, 'Translate the word to move next level', { font: "bold 20px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
-					callAjax("saveScore", "POST",{ guessed :1 },function (result) {
-						console.log(result);
-					});	
+					callAjax("saveScore", "POST",{ guessed :1 },function (result) {});	
 				} else { //False
 					alert('Please try again!');
 				}
 			} else{
-				callAjax("saveTranslate", "POST",{ base_id: arcadeInfo.base_id, translated: document.getElementById('inputPlay').value, sentiment: sentiButton,uaTB:1,aLevel: arcadeInfo.arcade_id, translated: 1 },function (result) {
-					// console.log(result);
-					if(result == 'success')
-						checkback = 0;
-						gameState = null;
-						game.state.start('PlayLoad');
-
-
-						// game.state.restart();
-						// game.state.start('Play',true,false);
-				});
+				if(sentiButton == 2){
+					alert('Please select sentiment!');
+				} else {
+					callAjax("saveTranslate", "POST",{ base_id: arcadeInfo.base_id, translated: document.getElementById('inputPlay').value, sentiment: sentiButton,uaTB:1,aLevel: arcadeInfo.arcade_id, translated: 1 },function (result) {
+						if(result == 'success')
+							checkback = 0;
+							gameState = null;
+							// game.state.restart();
+							game.state.start('PlayLoad');
+					});
+				}
 			}
 		}
 		else{

@@ -5,5 +5,6 @@ game.state.add('Play',PlayScreen); //Play Screen State
 game.state.add('PlayLoad',PlayLoad); //Play Screen Load State
 game.state.add('Direct Translate',DirectTranslate); //Direct Translation Screen State
 game.state.add('Leader Board',LeaderBoard); //Leader Board Screen State
+game.state.add('BootState',BootState);
 
-game.state.start('MainScreen');
+game.state.start('BootState');

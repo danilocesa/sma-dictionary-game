@@ -1,22 +1,12 @@
-var backButton, dialectText,tweenBoard,board,boardGroup,grossText,plus,minus,plusText,minusText,randText,sentiButton,submitButton,
-	userDialect = localStorage.getItem('dialect'),
-    userId = localStorage.getItem('user_id'),
+var backButton, dialectText,tweenBoard,board,boardGroup,grossText,plus,minus,plusText,minusText,randText,sentiButton = 2,submitButton,
 	DirectTranslate = function(){};
 
 DirectTranslate.prototype = {
-	preload: function() {
-		this.load.onLoadComplete.add(function() {    
-			randText = this.cache.getJSON('getRandomText'); 
-		}, this);
-		this.load.image('mainBG', './images/main_bg.png');
-		this.load.image('backButton', './images/back.png');
-		this.load.image('board', './images/board.png');
-		this.load.image('plus', './images/plus.png');
-		this.load.image('minus', './images/minus.png');
-		this.load.image('submit', './images/submit.png');
-		this.load.json('getRandomText', jsonUrl+'getRandomText');
+	preload: function() {  
+		randText = this.cache.getJSON('getRandomText'); 
 	},
 	create: function () {
+		
 		this.add.sprite(0, 0, 'mainBG');// Add background
 		backButton = this.add.button(10, 5, 'backButton',this.backMain);
 		backButton.scale.setTo(0.4,0.4);
@@ -117,26 +107,19 @@ DirectTranslate.prototype = {
 	},
 	saveTranslate: function (button) {
 		if(document.getElementById('inputDirectTrans').value != ''){
-			callAjax("saveTranslate", "POST",{ base_id: randText.base_id, translated: document.getElementById('inputDirectTrans').value, sentiment: sentiButton },function (result) {
+			if(sentiButton != 2){
+				callAjax("saveTranslate", "POST",{ base_id: randText.base_id, translated: document.getElementById('inputDirectTrans').value, sentiment: sentiButton },function (result) {
 				if(result == 'success')
 					game.state.start('Direct Translate',true,false);
-			});	
+				});	
+			} else{
+				alert('Please select sentiment!');
+			}
+			
 		} else{
 			alert('Please fill up the text before submitting!');
 		}
 	},
-	// overAlpha: function (variable) {
-	// 	if(variable.alpha == 1){
-	// 		variable.alpha = .5;
-	// 	}
-		
-	// },
-	// outAlpha: function (variable){
-	// 	if(){
-
-	// 	}
-	// 	variable.alpha = 1;
-	// },
 
 	render: function () {
 		 // game.debug.geom(dialectText.textBounds, 'rgba(255,0,0,0.5)');
