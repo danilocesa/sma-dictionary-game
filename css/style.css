@@ -269,3 +269,32 @@ canvas {
 #form-holder{
   display:none;
 }
+
+.tooltip {
+    cursor:pointer;
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 420px;
+    background-color: #FFF840;
+    color: #000;
+    text-align: left;
+    text-indent: justify;
+    border-radius: 6px;
+    padding: 10px;
+    font-size:12px;
+    bottom: 100%;
+    left: 50%; 
+    margin-left: -60px;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
