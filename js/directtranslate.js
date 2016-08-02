@@ -1,4 +1,4 @@
-var backButton, dialectText,tweenBoard,board,boardGroup,grossText,plus,minus,plusText,minusText,randText,sentiButton = 2,submitButton,
+var backButton, dialectText,tweenBoard,board,boardGroup,grossText,plus,minus,plusText,minusText,randText,sentiButton = 2,submitButton,sentiText;
 	DirectTranslate = function(){};
 
 DirectTranslate.prototype = {
@@ -6,7 +6,7 @@ DirectTranslate.prototype = {
 		randText = this.cache.getJSON('getRandomText'); 
 	},
 	create: function () {
-		
+
 		this.add.sprite(0, 0, 'mainBG');// Add background
 		backButton = this.add.button(10, 5, 'backButton',this.backMain);
 		backButton.scale.setTo(0.4,0.4);
@@ -15,8 +15,8 @@ DirectTranslate.prototype = {
 
         submitButton = this.add.button(this.world.centerX - 70, this.world.centerY + 190, 'submit',this.saveTranslate);
 		submitButton.scale.setTo(0.6,0.6);
-		submitButton.inputEnabled = true;
-        submitButton.input.useHandCursor = true;
+		submitButton.inputEnabled = false;
+        submitButton.alpha = 0.5;
 
         boardGroup = this.add.group();
         // boardGroup.width = 10;
@@ -60,15 +60,12 @@ DirectTranslate.prototype = {
 	        document.getElementById('inputDirectTrans').style.fontSize = '24px';
     	}
 		
-
         plus = this.add.button(this.world.centerX - 115, this.world.centerY + 120, 'plus',this.sentiButton);
         plus.name = "plus";
         plus.scale.setTo(0.25,0.25);
         plus.anchor.setTo(0.5, 0.5);
 		plus.inputEnabled = true;
         plus.input.useHandCursor = true;
-        // plus.events.onInputOver.add(this.overAlpha, this);
-        // plus.events.onInputOut.add(this.outAlpha, this);
 
         minus = this.add.button(this.world.centerX - 115, this.world.centerY + 155, 'minus',this.sentiButton);
         minus.name = "minus";
@@ -76,8 +73,6 @@ DirectTranslate.prototype = {
         minus.anchor.setTo(0.5, 0.5);
 		minus.inputEnabled = true;
         minus.input.useHandCursor = true;
-        // minus.events.onInputOver.add(this.overAlpha, this);
-        // minus.events.onInputOut.add(this.outAlpha, this);
 
         var plusStyle = { font: "bold 18px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "left"};
         plusText = this.add.text(this.world.centerX - 95,  this.world.centerY + 110, "positive sentiment", plusStyle);
@@ -86,7 +81,20 @@ DirectTranslate.prototype = {
         minusText = this.add.text(this.world.centerX - 95,  this.world.centerY + 145, "negative sentiment", plusStyle);
        
 	},
-	update: function () {}, // for realtime
+	update: function () {
+		document.getElementById("inputDirectTrans").onkeyup = function() {
+			if(this.value.length >= 3){
+				submitButton.inputEnabled = true;
+				submitButton.input.useHandCursor = true;
+				submitButton.alpha = 1;
+			} else{
+				submitButton.inputEnabled = false;
+				submitButton.input.useHandCursor = false;
+				submitButton.alpha = 0.5;
+			}
+		};
+
+	}, // for realtime
 	backMain: function () {
 		document.getElementById('inputDirectTrans').style.display = 'none';
 		game.state.start('MainScreen');
@@ -110,23 +118,20 @@ DirectTranslate.prototype = {
 			if(sentiButton != 2){
 				callAjax("saveTranslate", "POST",{ base_id: randText.base_id, translated: document.getElementById('inputDirectTrans').value, sentiment: sentiButton },function (result) {
 				if(result == 'success')
-					game.state.start('Direct Translate',true,false);
+					document.getElementById('inputDirectTrans').style.display = 'none';
+					game.state.start('DirectLoad');
+					// game.state.start('Direct Translate',true,false);
 				});	
 			} else{
-				alert('Please select sentiment!');
+				sentiText = game.add.text(game.world.centerX + 85,  game.world.centerY + 110, "", { font: "bold 12px Arial", fill: "red",wordWrap:true,wordWrapWidth:10});
+				sentiText.text = 'Please choose sentiment';
 			}
 			
 		} else{
-			alert('Please fill up the text before submitting!');
+			alert('Please input something in the field!');
 		}
 	},
-
-	render: function () {
-		 // game.debug.geom(dialectText.textBounds, 'rgba(255,0,0,0.5)');
-	}
-
-
+	render: function () {}
 
 }
-
 

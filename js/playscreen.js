@@ -1,4 +1,4 @@
-var backButton,level = 1,arcadeInfo,levelText,jumbleWordsGroup,sentiGroup,gameState = null,continueButton,dialectText,sentiButton = 2,checkback = 0,
+var backButton,level = 1,arcadeInfo,levelText,jumbleWordsGroup,sentiGroup,gameState = null,continueButton,dialectText,sentiButton = 2,checkback = 0,sentiText,
 	PlayScreen = function(){};
 
 PlayScreen.prototype = {
@@ -23,9 +23,9 @@ PlayScreen.prototype = {
 
         submitButton = this.add.button(this.world.centerX + 70, this.world.centerY + 210, 'submit',this.savePlay);
 		submitButton.scale.setTo(0.6,0.6);
-		submitButton.inputEnabled = true;
-        submitButton.input.useHandCursor = true;
-
+		submitButton.inputEnabled = false;
+        submitButton.alpha = 0.5;
+		
 
         boardGroup = this.add.group();
         board = this.add.sprite(455 , 20, 'board');
@@ -119,6 +119,19 @@ PlayScreen.prototype = {
     	}
 
 	},
+	update: function () {
+		document.getElementById("inputPlay").onkeyup = function() {
+			if(this.value.length >= 3){
+				submitButton.inputEnabled = true;
+				submitButton.input.useHandCursor = true;
+				submitButton.alpha = 1;
+			} else{
+				submitButton.inputEnabled = false;
+				submitButton.input.useHandCursor = false;
+				submitButton.alpha = 0.5;
+			}
+		};
+	},
 	start: function () {},
 	backMain: function () {
 		document.getElementById('inputPlay').style.display = 'none';
@@ -148,24 +161,25 @@ PlayScreen.prototype = {
 	        		var continueText = game.add.text(game.world.centerX - 165, game.world.centerY + 150, 'Translate the word to move next level', { font: "bold 20px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
 					callAjax("saveScore", "POST",{ guessed :1 },function (result) {});	
 				} else { //False
-					alert('Please try again!');
+					document.getElementById('inputPlay').value = 'Incorrect guess!'
 				}
 			} else{
 				if(sentiButton == 2){
-					alert('Please select sentiment!');
+					// alert('Please select sentiment!');
+					sentiText = game.add.text(game.world.centerX - 150,  game.world.centerY + 280, "Please choose sentiment", { font: "bold 12px Arial", fill: "red",wordWrap:true,wordWrapWidth:200});
+					sentiText.text = 'Please choose sentiment';
 				} else {
 					callAjax("saveTranslate", "POST",{ base_id: arcadeInfo.base_id, translated: document.getElementById('inputPlay').value, sentiment: sentiButton,uaTB:1,aLevel: arcadeInfo.arcade_id, translated: 1 },function (result) {
 						if(result == 'success')
 							checkback = 0;
 							gameState = null;
-							// game.state.restart();
 							game.state.start('PlayLoad');
 					});
 				}
 			}
 		}
 		else{
-			alert('Please fill up the text before submitting!');
+			
 		}
 
 	},

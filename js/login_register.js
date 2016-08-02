@@ -13,7 +13,7 @@ var $registerShow = document.getElementById('register-show'),
 
   callAjax("getDialects", "GET","",function (result) {
     var $sel = document.getElementById("dialect_select");
-    Object.keys(result).forEach(function(key) { 
+    Object.keys(result).reverse().forEach(function(key) { 
       var $option = document.createElement("option");
       $option.value = result[key].dialect_id;
       $option.text = result[key].dialect;

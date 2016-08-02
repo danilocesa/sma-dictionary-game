@@ -32,7 +32,7 @@ canvas {
      background: #000;
      width: 550px;
      height: 650px;
-     opacity: 0.9;
+     /*opacity: 0.9;*/
      top: 0;  
  }
  #logo {

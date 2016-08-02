@@ -1,4 +1,4 @@
-var userLogged,loaderText,
+var userLogged,loaderText,loadImg1,loadImg2,loadImg3,loadImg4,
 	BootState = function(){};
 
 BootState.prototype = {
@@ -11,7 +11,9 @@ BootState.prototype = {
         this.load.json('playerStats', jsonUrl+'getStats');
         this.load.json('getRandomText', jsonUrl+'getRandomText');
 
-        this.load.image('loader', './images/loader.gif');
+        // this.load.image('loader', './images/loader.gif');
+        this.load.image('loaderText', './images/loader-text.png');
+        this.load.image('loaderImage', './images/loader-image.png');
         this.load.image('logo', './images/tropicalv2-min.png');
         this.load.image('playButton', './images/play.png');
         this.load.image('mainBG', './images/main_bg.png');
@@ -32,28 +34,44 @@ BootState.prototype = {
 		this.load.image('submit', './images/submit.png');
 		this.load.image('continue', './images/continue.png');
 
-
         this.load.audio('bgMusic','./audio/bg_sound.mp3');
 	},
 	create: function (){
-		this.load.onLoadStart.add(this.loadStart, this);
-		this.add.sprite(-120, -120, 'loader');
-		if(bgMusic == 'undefined' || bgMusic == null){
-            bgMusic = game.add.audio('bgMusic');
-            bgMusic.play();
-            bgMusic.volume = bgMusicVol ? bgMusicVol : 1;
-        }
+		this.add.sprite(0, 0, 'loaderText');
+		loadImg1 = this.add.sprite(140, 350, 'loaderImage');
+		loadImg1.scale.setTo(0.7,0.7);
+		loadImg1.anchor.setTo(0.5, 0.5);
+		loadImg2 = this.add.sprite(240, 350, 'loaderImage');
+		loadImg2.scale.setTo(0.7,0.7);
+		loadImg2.anchor.setTo(0.5, 0.5);
+		loadImg3 = this.add.sprite(340, 350, 'loaderImage');
+		loadImg3.scale.setTo(0.7,0.7);
+		loadImg3.anchor.setTo(0.5, 0.5);
+		loadImg4 = this.add.sprite(440, 350, 'loaderImage');
+		loadImg4.scale.setTo(0.7,0.7);
+		loadImg4.anchor.setTo(0.5, 0.5);
+		// if(bgMusic == 'undefined' || bgMusic == null){
+  //           bgMusic = game.add.audio('bgMusic');
+  //           bgMusic.play();
+  //           bgMusic.volume = bgMusicVol ? bgMusicVol : 1;
+  //       }
 		callAjax('getUserLogged','GET','',function(response){
 		if(response)
 			setTimeout(function(){ game.state.start('MainScreen'); }, 5000);
 			
 		});
-		loaderText = this.add.text(32, 32, 'Click to start load', { fill: '#000' });
+
+		loaderText = game.add.text(this.world.centerX - 50, this.world.centerY + 100, 'Loading...', { font: "bold 28px Arial", fill: "#000", align:"center"});
+
+		game.add.tween(loaderText).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
 		
 	},
-	loadStart: function (){
-		loaderText.setText("Loading ...");
+	update: function (){
+		loadImg1.angle += 3;
+		loadImg2.angle += 3;
+		loadImg3.angle += 3;
+		loadImg4.angle += 3;
+
 	},
-	update: function (){},
 	render: function (){}
 }
