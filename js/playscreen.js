@@ -12,7 +12,11 @@ PlayScreen.prototype = {
 			gameState = null;
 			game.state.restart();
 		}
-
+		optionsMusic = game.add.audio('optionsMusic');
+		failPlay = game.add.audio('failPlay');
+		successPlay = game.add.audio('successPlay');
+		stageCleared = game.add.audio('stageCleared');
+		flipMS = game.add.audio('flipMS');
 		console.log(arcadeInfo);
 		this.add.sprite(0, 0, 'mapBG');// Add background
 
@@ -121,7 +125,7 @@ PlayScreen.prototype = {
 	},
 	update: function () {
 		document.getElementById("inputPlay").onkeyup = function() {
-			if(this.value.length >= 3){
+			if(this.value.length >= 2){
 				submitButton.inputEnabled = true;
 				submitButton.input.useHandCursor = true;
 				submitButton.alpha = 1;
@@ -134,6 +138,7 @@ PlayScreen.prototype = {
 	},
 	start: function () {},
 	backMain: function () {
+		optionsMusic.play();
 		document.getElementById('inputPlay').style.display = 'none';
 		if(gameState == 'translate'){
 			checkback = 1;
@@ -160,17 +165,23 @@ PlayScreen.prototype = {
 	        		var correctText = game.add.text(game.world.centerX - 65, 250, arcadeInfo.synset_terms, { font: "bold 58px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
 	        		var continueText = game.add.text(game.world.centerX - 165, game.world.centerY + 150, 'Translate the word to move next level', { font: "bold 20px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
 					callAjax("saveScore", "POST",{ guessed :1 },function (result) {});	
+					bgMusic.volume = 0.4;
+					stageCleared.play();
 				} else { //False
-					document.getElementById('inputPlay').value = 'Incorrect guess!'
+					failPlay.play();
+					document.getElementById('inputPlay').value = 'Incorrect guess!';
 				}
 			} else{
 				if(sentiButton == 2){
 					// alert('Please select sentiment!');
 					sentiText = game.add.text(game.world.centerX - 150,  game.world.centerY + 280, "Please choose sentiment", { font: "bold 12px Arial", fill: "red",wordWrap:true,wordWrapWidth:200});
 					sentiText.text = 'Please choose sentiment';
+					failPlay.play();
 				} else {
 					callAjax("saveTranslate", "POST",{ base_id: arcadeInfo.base_id, translated: document.getElementById('inputPlay').value, sentiment: sentiButton,uaTB:1,aLevel: arcadeInfo.arcade_id, translated: 1 },function (result) {
 						if(result == 'success')
+							bgMusic.volume = 0.4;
+							successPlay.play();
 							checkback = 0;
 							gameState = null;
 							game.state.start('PlayLoad');

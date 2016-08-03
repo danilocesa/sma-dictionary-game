@@ -1,5 +1,5 @@
 var logoSprite, playButton,leaderButton, settingsButton, exitButton, blackscreen, okayGreen, exitPopup, exitPopupButton,
-    settingsPopup, tweenExit = null, tweenSettings = null, bgMusic, musicSlider, musicSlideButton,directButton,bgMusicVol,sessionValue,
+    settingsPopup, tweenExit = null, tweenSettings = null, bgMusic, musicSlider, musicSlideButton,directButton,bgMusicVol,sessionValue,optionsMusic,
     mSliderw,getDialects,getUserInfo,
     MainScreen = function() {};
 
@@ -11,7 +11,15 @@ MainScreen.prototype = {
     },
 
     create: function () {
-
+        if(bgMusic == 'undefined' || bgMusic == null){
+            bgMusic = game.add.audio('bgMusic');
+            bgMusic.play();
+            
+            bgMusic.volume = bgMusicVol ? bgMusicVol : 1;
+        }
+        bgMusic.loop = true;
+        optionsMusic = game.add.audio('optionsMusic');
+        playClickMS = game.add.audio('playClickMS');
         //Add Background Image
         this.add.sprite(0, 0, 'mainBG');
         //Add logo
@@ -118,13 +126,11 @@ MainScreen.prototype = {
 
     },
 
-    update: function () {
-        
-        
-    },
+    update: function () {},
 
     /** Show exit dialog popup **/
     exitGame: function () {
+        optionsMusic.play();
         directButton.input.enabled = false;
         playButton.input.enabled = false;
         leaderButton.input.enabled = false;
@@ -144,16 +150,18 @@ MainScreen.prototype = {
 
     /** Close exit popup dialog **/
     exitPopUp: function () {
+        optionsMusic.play();
+        if (tweenExit && tweenExit.isRunning || exitPopup.scale.x === 0.1)
+        {
+            return;
+        }
+
+        tweenExit = game.add.tween(exitPopup.scale).to( { x: 0.1, y: 0.1 }, 500, Phaser.Easing.Elastic.In, true);
         directButton.input.enabled = true;
         playButton.input.enabled = true;
         leaderButton.input.enabled = true;
         settingsButton.input.enabled = true;
         exitButton.input.enabled = true;
-        if (tweenExit && tweenExit.isRunning || exitPopup.scale.x === 0.1)
-        {
-            return;
-        }
-        tweenExit = game.add.tween(exitPopup.scale).to( { x: 0.1, y: 0.1 }, 500, Phaser.Easing.Elastic.In, true);
         exitPopup.alpha = 0;
         playButton.visible = true;
         settingsButton.visible = true;
@@ -161,6 +169,7 @@ MainScreen.prototype = {
         
     },
     leaderGame: function (){
+        optionsMusic.play();
         game.state.start('Leader Board');
     },
     /** Close the game **/
@@ -170,6 +179,7 @@ MainScreen.prototype = {
 
     /** Show settings dialog popup **/
     setGame: function () {
+        optionsMusic.play();
         directButton.input.enabled = false;
         playButton.input.enabled = false;
         leaderButton.input.enabled = false;
@@ -213,6 +223,7 @@ MainScreen.prototype = {
     },
     /** Save User Settings **/
     saveSettings: function () {
+        optionsMusic.play();
         callAjax("saveUserSettings", "POST",{dialect: document.getElementById('dialect_select').value},function (result) {
             directButton.input.enabled = true;
             playButton.input.enabled = true;
@@ -230,6 +241,7 @@ MainScreen.prototype = {
     },
     /** Close the settings pop up **/
     exitSettings: function () {
+        optionsMusic.play();
         directButton.input.enabled = true;
         playButton.input.enabled = true;
         leaderButton.input.enabled = true;
@@ -252,6 +264,9 @@ MainScreen.prototype = {
 
     changeVolume: function (pointer) {
         mSliderw = pointer.x;
+        if(pointer.x > 160){
+            bgMusic.mute = false;   
+        }
         if (pointer.x <= 160){
             bgMusic.mute = true;
         }
@@ -292,10 +307,12 @@ MainScreen.prototype = {
         exitButton.input.enabled = false;
     },
     directTranslate: function () {
-        game.state.start('Direct Translate');
+        playClickMS.play();
+        game.state.start('DirectLoad');
     },
 
     startPlay: function () {
+        playClickMS.play();
         game.state.start('Play');
     },
 

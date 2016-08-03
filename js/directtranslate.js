@@ -83,7 +83,7 @@ DirectTranslate.prototype = {
 	},
 	update: function () {
 		document.getElementById("inputDirectTrans").onkeyup = function() {
-			if(this.value.length >= 3){
+			if(this.value.length >= 2){
 				submitButton.inputEnabled = true;
 				submitButton.input.useHandCursor = true;
 				submitButton.alpha = 1;

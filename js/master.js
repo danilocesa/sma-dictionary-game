@@ -21,14 +21,14 @@ window.onload = function() {
 };
 
 //Please uncomment after developing for security purposes
-// window.addEventListener("beforeunload", function (e) {
-//   var confirmationMessage = "test";
-//   localStorage.clear();
-//   callAjax("deleteSession", "GET",'',function(result){});  //Call delete session
-//   (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+window.addEventListener("beforeunload", function (e) {
+  var confirmationMessage = "test";
+  localStorage.clear();
+  callAjax("deleteSession", "GET",'',function(result){});  //Call delete session
+  (e || window.event).returnValue = confirmationMessage; //Gecko + IE
 
-//   return confirmationMessage;                            //Webkit, Safari, Chrome
-// });
+  return confirmationMessage;                            //Webkit, Safari, Chrome
+});
 
 function CoolElement(element) {
     this.element = element;

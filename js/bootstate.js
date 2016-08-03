@@ -34,6 +34,13 @@ BootState.prototype = {
 		this.load.image('submit', './images/submit.png');
 		this.load.image('continue', './images/continue.png');
 
+        this.load.audio('openMusic','./audio/opening.ogg');
+        this.load.audio('optionsMusic','./audio/click-options.ogg');
+        this.load.audio('playClickMS','./audio/click-game.ogg');
+        this.load.audio('failPlay','./audio/fail.ogg');
+        this.load.audio('successPlay','./audio/success.ogg');
+        this.load.audio('stageCleared','./audio/stage-cleared.ogg');
+        this.load.audio('flipMS','./audio/flip.ogg');
         this.load.audio('bgMusic','./audio/bg_sound.mp3');
 	},
 	create: function (){
@@ -50,15 +57,13 @@ BootState.prototype = {
 		loadImg4 = this.add.sprite(440, 350, 'loaderImage');
 		loadImg4.scale.setTo(0.7,0.7);
 		loadImg4.anchor.setTo(0.5, 0.5);
-		// if(bgMusic == 'undefined' || bgMusic == null){
-  //           bgMusic = game.add.audio('bgMusic');
-  //           bgMusic.play();
-  //           bgMusic.volume = bgMusicVol ? bgMusicVol : 1;
-  //       }
+		
+		openMusic = game.add.audio('openMusic');
+        openMusic.play();
+		
 		callAjax('getUserLogged','GET','',function(response){
 		if(response)
-			setTimeout(function(){ game.state.start('MainScreen'); }, 5000);
-			
+			setTimeout(function(){ game.state.start('MainScreen'); }, 3000);
 		});
 
 		loaderText = game.add.text(this.world.centerX - 50, this.world.centerY + 100, 'Loading...', { font: "bold 28px Arial", fill: "#000", align:"center"});
