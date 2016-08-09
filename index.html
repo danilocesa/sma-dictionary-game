@@ -8,11 +8,14 @@
     <meta name="description" content="Social Media Analytics - Dictionary">
     <meta name="keywords" content="SMA,Halo Halo, Dictionary,Social,Sentiment">
     <title>Halo Halo</title>
-    <link rel="stylesheet" href='css/normalize.css'>  
+    <link rel="stylesheet" href='css/normalize.min.css'>  
     <link rel="stylesheet" href='css/style.css'>
     <script src='js/form2js.js'></script>
     <script src='js/callAjax.js'></script>
     <script src='js/phaser.min.js'></script>
+    <script src='js/phaser-input.min.js'></script>
+    <script src='js/phaser-state-transition.js'></script>
+    <script src='js/phaser-shake.js'></script>
     <script src='js/master.js'></script>
     <script src='js/bootstate.js'></script>
     <script src='js/mainscreen.js'></script>
@@ -21,11 +24,15 @@
     <script src='js/directload.js'></script>
     <script src='js/directtranslate.js'></script>
     <script src='js/leaderboard.js'></script>
-    <script src='js/main.js'></script>
     
   </head>
   <body>
+    <noscript>Your browser does not support JavaScript!</noscript>
     <div id="main-content">
+    <!--[if IE]>
+        <p class="browserupgrade">Supported browser: Google Chrome</p>
+    <![endif]-->
+      <div id="fox-no"><p class="browserupgrade">Supported browser: Google Chrome</p></div>
       <div id="form-holder">
         <div id="logo">
           <img src="images/tropicalv2-min.png" />
@@ -37,18 +44,53 @@
           <form id="login-form">
             <input type="hidden" name="_token" value="" /> 
             <div class="login-input">
-              <label for="username" >Username</label>
+              <label>Username</label>
               <input type="text" name="username" />
             </div>
             <div class="login-input">
-              <label for="password" >Password</label>
+              <label>Password</label>
               <input type="password" name="password" />
             </div>
             <div class="login-reg-text">
-              <p>New User? <span id="register-show"><u>Register Here</u></span> </p>
+              <p id="fpword">Forgot Password?</p>
+              <p>New User? <u class="register-show">Register Here</u></p>
             </div>
             <div class="login-submit">
               <img src='images/login-min.png' id="submit-login" />
+            </div>
+          </form>
+        </div>
+        <div id="forgot-forms">
+          <div id="forgot-errors">
+            <p>Incorrect Username</p>
+          </div>
+        <!--   <div id="forgot-success">
+            <img src="images/success_registration.png" id="regSuccessDialog" />
+            <img src="images/okay_green.png" id="regSuccesButton" class="regButton" />
+          </div> -->
+          <form id="forgot-form">
+            <input type="hidden" name="_token" value="" /> 
+            <div class="forgot-input">
+              <label >Username</label>
+              <input type="text" name="user_name" maxlength="10" />
+              <p class="error-message"></p>
+            </div>
+            <div class="forgot-input">
+              <label>New Password</label>
+              <input type="password" name="new-password" />
+              <p class="error-message"></p>
+            </div>
+             <div class="forgot-input">
+              <label>Confirm Password</label>
+              <input type="password" name="confirm-password" />
+              <p class="error-message"></p>
+            </div>
+            <div class="forgot-reg-text">
+              <p id="textLogin">Login</p>
+              <p>New User? <u class="register-show">Register Here</u></p>
+            </div>
+            <div class="forgot-submit">
+              <img src='images/submit.png' id="submit-forgot" />
             </div>
           </form>
         </div>
@@ -56,12 +98,12 @@
           <form id="register-form" name="register-forms">
             <input type="hidden" name="_token" value="" /> 
             <div class="register-input">
-              <label for="username" >Username</label>
-              <input type="text" name="username" placeholder="Username" tabindex="1" />
+              <label >Username</label>
+              <input type="text" name="username" placeholder="Username" tabindex="1" maxlength="10" />
               <p class="error-message"></p>
             </div>
             <div class="register-input">
-              <label for="password" >Password</label>
+              <label>Password</label>
               <input type="password" name="password" tabindex="2" />
               <p class="error-message"></p>
             </div>
@@ -108,6 +150,7 @@
           </form>
         </div>
         <div id="registration-dialog">
+          <img src="images/password_change.png" id="forSuccessDialog" />
           <img src="images/success_registration.png" id="regSuccessDialog" />
           <img src="images/account_exists.png" id="regExistsDialog" />
           <img src="images/okay_green.png" id="regSuccesButton" class="regButton" />
@@ -116,10 +159,5 @@
         <div id="black-screen"></div>
       </div>   
     </div>
-    <!-- <audio  autoplay="" controls="" loop="" preload="" style="display:none;">
-      <source src="{{ asset('audio/bg_sound.mp3') }}" type="audio/mpeg">
-    Your browser does not support the audio element.
-    </audio> -->
-    
   </body>
 </html>

@@ -1,4 +1,4 @@
-var backButton,level = 1,arcadeInfo,levelText,jumbleWordsGroup,sentiGroup,gameState = null,continueButton,dialectText,sentiButton = 2,checkback = 0,sentiText,
+var backButton,level = 1,arcadeInfo,levelText,jumbleWordsGroup,sentiGroup,gameState = null,continueButton,dialectText,sentiButton = 2,checkback = 0,sentiText,skipButton,inputTranslate,emitterLeft,emitterRight
 	PlayScreen = function(){};
 
 PlayScreen.prototype = {
@@ -29,7 +29,11 @@ PlayScreen.prototype = {
 		submitButton.scale.setTo(0.6,0.6);
 		submitButton.inputEnabled = false;
         submitButton.alpha = 0.5;
-		
+
+        skipButton = this.add.button(10, 585, 'skipButton',this.skip);
+		skipButton.scale.setTo(0.4,0.4);
+		skipButton.inputEnabled = true;
+        skipButton.input.useHandCursor = true;
 
         boardGroup = this.add.group();
         board = this.add.sprite(455 , 20, 'board');
@@ -52,7 +56,6 @@ PlayScreen.prototype = {
 
 		 if(gameState == 'translate'){
         	this.checkJumble();
-        	document.getElementById('inputPlay').style.display = 'block';
         	dialectText = game.add.text(this.world.centerX - 65, 165, arcadeInfo.synset_terms,{ font: "bold 58px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
         }	
     	else{
@@ -102,60 +105,54 @@ PlayScreen.prototype = {
 
     	glossText = game.add.text(35, (this.world.centerX) + 75 , arcadeInfo.gloss, { font: "bold 16px Arial", fill: "#fff", align:"center", wordWrap:true, wordWrapWidth:480});
 
-    	if(document.getElementById('inputPlay') != null){
-    		document.getElementById('inputPlay').style.display = '';
-    		document.getElementById('inputPlay').value = '';
-    	} else{
-	    	var inputTranslate = document.createElement('input');
-			inputTranslate.type = 'text';
-			inputTranslate.id = 'inputPlay';
-	        var main_content = document.getElementById('main-content'); 
-	        main_content.appendChild(inputTranslate);
-	        document.getElementsByTagName("canvas")[0].style.zIndex = '1';
-	        document.getElementById('inputPlay').style.zIndex = '2';
-	        document.getElementById('inputPlay').style.position = 'relative';
-	        document.getElementById('inputPlay').style.top = '475px';
-	        document.getElementById('inputPlay').style.left = '108px';
-	        document.getElementById('inputPlay').style.width = '320px';
-	        document.getElementById('inputPlay').style.paddingLeft = '10px';
-	        document.getElementById('inputPlay').style.height = '30px';
-	        document.getElementById('inputPlay').style.fontSize = '24px';
-    	}
+
+    	inputTranslate = this.add.inputField(95, (this.world.centerX) + 190, {
+            font: '18px Arial',
+            height: 24,
+            fill: '#000',
+            fontWeight: 'bold',
+            width: 350,
+            padding: 8,
+            borderWidth: 3,
+            borderColor: '#000',
+            borderRadius: 6,
+            textAlign: 'center',
+            zoom: true
+        });
 
 	},
 	update: function () {
-		document.getElementById("inputPlay").onkeyup = function() {
-			if(this.value.length >= 2){
-				submitButton.inputEnabled = true;
-				submitButton.input.useHandCursor = true;
-				submitButton.alpha = 1;
-			} else{
-				submitButton.inputEnabled = false;
-				submitButton.input.useHandCursor = false;
-				submitButton.alpha = 0.5;
-			}
-		};
+		if(inputTranslate.value.length > 1){
+			submitButton.inputEnabled = true;
+			submitButton.input.useHandCursor = true;
+			submitButton.alpha = 1;
+		} else{
+			submitButton.inputEnabled = false;
+			submitButton.input.useHandCursor = false;
+			submitButton.alpha = 0.5;
+		}
 	},
 	start: function () {},
 	backMain: function () {
 		optionsMusic.play();
-		document.getElementById('inputPlay').style.display = 'none';
 		if(gameState == 'translate'){
 			checkback = 1;
 		}
 		game.state.start('MainScreen');
 	},
+	skip: function () {
+		optionsMusic.play();
+		callAjax("deductScore", "GET",'',function (result) { game.state.start('PlayLoad'); });	
+	},
 	savePlay: function(){
-		if(document.getElementById('inputPlay').value != ''){
-
+		if(inputTranslate.value != ''){
 			if(gameState != 'translate'){
 				//Check jumblewords
-				if(document.getElementById('inputPlay').value.toLowerCase() == arcadeInfo.synset_terms.toLowerCase() ){ //Correct Word
+				if(inputTranslate.value.toLowerCase() == arcadeInfo.synset_terms.toLowerCase() ){ //Correct Word
 					gameState = 'translate';
 					var blackscreen = game.add.graphics();
 			   		blackscreen.beginFill(0x000000, 0.7);
 			    	blackscreen.drawRect(0, 0, 550, 650);
-			    	document.getElementById('inputPlay').style.display = 'none';
 			    	continueButton = game.add.button(game.world.centerX - 90, game.world.centerY + 190, 'continue',function(){ game.state.start('Play',true,false); });
 					continueButton.scale.setTo(0.6,0.6);
 					continueButton.inputEnabled = true;
@@ -165,20 +162,35 @@ PlayScreen.prototype = {
 	        		var correctText = game.add.text(game.world.centerX - 65, 250, arcadeInfo.synset_terms, { font: "bold 58px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
 	        		var continueText = game.add.text(game.world.centerX - 165, game.world.centerY + 150, 'Translate the word to move next level', { font: "bold 20px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
 					callAjax("saveScore", "POST",{ guessed :1 },function (result) {});	
-					bgMusic.volume = 0.4;
+
 					stageCleared.play();
+					emitterLeft = game.add.emitter(70, -20, 200);
+
+				    //  Here we're passing an array of image keys. It will pick one at random when emitting a new particle.
+				    emitterLeft.makeParticles(['confet1', 'confet2', 'confet3']);
+
+				    emitterLeft.start(false, 5000, 50);
+
+				    emitterRight = game.add.emitter(480, -20, 200);
+
+				    //  Here we're passing an array of image keys. It will pick one at random when emitting a new particle.
+				    emitterRight.makeParticles(['confet1', 'confet2', 'confet3']);
+
+				    emitterRight.start(false, 5000, 50);
+
 				} else { //False
 					failPlay.play();
-					document.getElementById('inputPlay').value = 'Incorrect guess!';
+					game.plugins.screenShake.shake(7);
+					inputTranslate.setText('Incorrect guess!');
 				}
 			} else{
 				if(sentiButton == 2){
-					// alert('Please select sentiment!');
 					sentiText = game.add.text(game.world.centerX - 150,  game.world.centerY + 280, "Please choose sentiment", { font: "bold 12px Arial", fill: "red",wordWrap:true,wordWrapWidth:200});
-					sentiText.text = 'Please choose sentiment';
 					failPlay.play();
+					game.plugins.screenShake.shake(7);
+					sentiText.text = 'Please choose sentiment';
 				} else {
-					callAjax("saveTranslate", "POST",{ base_id: arcadeInfo.base_id, translated: document.getElementById('inputPlay').value, sentiment: sentiButton,uaTB:1,aLevel: arcadeInfo.arcade_id, translated: 1 },function (result) {
+					callAjax("saveTranslate", "POST",{ base_id: arcadeInfo.base_id, translated: inputTranslate.value, sentiment: sentiButton,uaTB:1,aLevel: arcadeInfo.arcade_id, phase: 1 },function (result) {
 						if(result == 'success')
 							bgMusic.volume = 0.4;
 							successPlay.play();
@@ -190,7 +202,7 @@ PlayScreen.prototype = {
 			}
 		}
 		else{
-			
+			alert('Please input guess word!');
 		}
 
 	},
@@ -228,10 +240,10 @@ PlayScreen.prototype = {
 
         sentiGroup.addChild(minus);
 
-        plusText = this.add.text(this.world.centerX - 95,  this.world.centerY + 110, "positive sentiment", { font: "bold 18px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "left"});
+        plusText = this.add.text(this.world.centerX - 95,  this.world.centerY + 110, "positive sentiment", { font: "bold 18px Arial", fill: "#fff",boundsAlignH: "left", boundsAlignV: "left"});
         sentiGroup.addChild(plusText);
 
-        minusText = this.add.text(this.world.centerX - 95,  this.world.centerY + 145, "negative sentiment", { font: "bold 18px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "left"});
+        minusText = this.add.text(this.world.centerX - 95,  this.world.centerY + 145, "negative sentiment", { font: "bold 18px Arial", fill: "#fff",boundsAlignH: "left", boundsAlignV: "left"});
         sentiGroup.addChild(minusText);
 
         sentiGroup.y = 100;

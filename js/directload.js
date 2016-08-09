@@ -5,6 +5,7 @@ DirectLoad.prototype = {
     	this.load.json('getRandomText', jsonUrl+'getRandomText');
     }, 	
     create : function() {
-    	game.state.start('Direct Translate');
+    	this.game.stateTransition.to('Direct Translate');
+    	// game.state.start('Direct Translate');
     }
 }   

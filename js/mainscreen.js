@@ -6,18 +6,25 @@ var logoSprite, playButton,leaderButton, settingsButton, exitButton, blackscreen
 MainScreen.prototype = {
 
     preload : function() {   
+        console.clear();
+        console.log('%c MainScreen Preload ', 'background:green;color:white;');
         getDialects = this.cache.getJSON('getDialects'); 
         getUserInfo = this.cache.getJSON('getUserInfo'); 
+        this.load.json('userSettings', jsonUrl+'userSettings');
+        userSettings = this.cache.getJSON('userSettings'); 
     },
 
     create: function () {
-        if(bgMusic == 'undefined' || bgMusic == null){
-            bgMusic = game.add.audio('bgMusic');
-            bgMusic.play();
-            
-            bgMusic.volume = bgMusicVol ? bgMusicVol : 1;
-        }
+        bgMusic.play();
         bgMusic.loop = true;
+        if(userSettings.music_volume || userSettings.setting_music ){
+            bgMusic.volume = userSettings.music_volume;
+            mSliderw = userSettings.setting_music;
+        }  else {
+            bgMusic.volume = 1;
+            mSliderw = 285;
+        }
+       
         optionsMusic = game.add.audio('optionsMusic');
         playClickMS = game.add.audio('playClickMS');
         //Add Background Image
@@ -62,14 +69,12 @@ MainScreen.prototype = {
         
         okayGreenExit = this.make.sprite( (exitPopUpDialog.width / 2) + 50 , (exitPopUpDialog.height / 2) + 98, 'okayGreen');
         okayGreenExit.scale.setTo(0.3,0.3);
-        okayGreenExit.inputEnabled = true;
-        okayGreenExit.input.useHandCursor = true;
+        okayGreenExit.inputEnabled = false;
         okayGreenExit.events.onInputDown.add(this.closeApp, this);
         
         exitPopupButton = this.make.sprite( (exitPopUpDialog.width / 2) - 120, (exitPopUpDialog.height / 2) + 105, 'exitButton');
         exitPopupButton.scale.setTo(0.26,0.26);
-        exitPopupButton.inputEnabled = true;
-        exitPopupButton.input.useHandCursor = true;
+        exitPopupButton.inputEnabled = false;
         exitPopupButton.events.onInputDown.add(this.exitPopUp, this);
         
         exitPopUpDialog.addChild(okayGreenExit);
@@ -100,9 +105,11 @@ MainScreen.prototype = {
         musicSlider.scale.setTo(0.89,0.64);
 
         // if(mSliderw == null || mSliderw == 'undefined'){
-            mSliderw = (settingsPopupDialog.width / 2 ) + 105;
+        //     mSliderw = (settingsPopupDialog.width / 2 ) + 105;
         // } else{
             // mSliderw = mSliderw;
+            
+            
         // }
         musicSlideButton = this.add.sprite(mSliderw, (settingsPopupDialog.height / 2 ) - 39, 'musicSlideButton');
         musicSlideButton.scale.setTo(0.25,0.2);
@@ -130,6 +137,7 @@ MainScreen.prototype = {
 
     /** Show exit dialog popup **/
     exitGame: function () {
+        console.log('%c Exit Popup ', 'background:green;color:white;');
         optionsMusic.play();
         directButton.input.enabled = false;
         playButton.input.enabled = false;
@@ -138,11 +146,22 @@ MainScreen.prototype = {
         exitButton.input.enabled = false;
 
         if ((tweenExit !== null && tweenExit.isRunning) || exitPopup.scale.x === 1)
-        {
+        {   
+            okayGreenExit.inputEnabled = false;
+            exitPopupButton.inputEnabled = false;
             return;
         }
 
-        tweenExit = game.add.tween(exitPopup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
+        var tweenexit = game.add.tween(exitPopup.scale)
+        tweenExit = tweenexit.to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
+        tweenexit.onComplete.add(function(){
+            okayGreenExit.inputEnabled = true;
+            okayGreenExit.input.useHandCursor = true;
+            exitPopupButton.inputEnabled = true;
+            exitPopupButton.input.useHandCursor = true;
+        }, this);
+        tweenexit.start();
+
         exitPopup.alpha = 1;
         blackscreen.visible = true;
         
@@ -150,6 +169,7 @@ MainScreen.prototype = {
 
     /** Close exit popup dialog **/
     exitPopUp: function () {
+        console.log('%c Exit Popup Close ', 'background:green;color:white;');
         optionsMusic.play();
         if (tweenExit && tweenExit.isRunning || exitPopup.scale.x === 0.1)
         {
@@ -169,16 +189,20 @@ MainScreen.prototype = {
         
     },
     leaderGame: function (){
+        console.log('%c Leader board state ', 'background:green;color:white;');
         optionsMusic.play();
-        game.state.start('Leader Board');
+        this.game.stateTransition.to('Leader Board'); 
+        // game.state.start('Leader Board');
     },
     /** Close the game **/
     closeApp: function () {
-        window.close();
+        location.reload();
+        // window.close();
     },
 
     /** Show settings dialog popup **/
     setGame: function () {
+        console.log('%c Settings Popup ', 'background:green;color:white;');
         optionsMusic.play();
         directButton.input.enabled = false;
         playButton.input.enabled = false;
@@ -189,42 +213,49 @@ MainScreen.prototype = {
         {
             return;
         }
-        if(document.getElementById("dialect_select") == null ){
-            var $selectDialect = document.createElement('select');
-            $selectDialect.id = "dialect_select";
-            var $main_content = document.getElementById('main-content'); 
-            $main_content.appendChild($selectDialect);
-            var $sel = document.getElementById("dialect_select");
-            Object.keys(getDialects).reverse().forEach(function(key) { 
-              var $option = document.createElement("option");
-              $option.value = getDialects[key].dialect_id;
-              $option.text = getDialects[key].dialect;
-              if(getUserInfo.dialect == getDialects[key].dialect_id){
-                $option.selected = true;
-              }
-              $sel.insertBefore($option, $sel.options[1]);
-            });
+        
+        var tweenset = game.add.tween(settingsPopup.scale);
+        tweenSettings = tweenset.to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
+        tweenset.onComplete.add(function(){
+            if(document.getElementById("dialect_select") == null ){
+                var $selectDialect = document.createElement('select');
+                $selectDialect.id = "dialect_select";
+                var $main_content = document.getElementById('main-content'); 
+                $main_content.appendChild($selectDialect);
+                var $sel = document.getElementById("dialect_select");
+                Object.keys(getDialects).reverse().forEach(function(key) { 
+                  var $option = document.createElement("option");
+                  $option.value = getDialects[key].dialect_id;
+                  $option.text = getDialects[key].dialect;
+                  if(getUserInfo.dialect == getDialects[key].dialect_id){
+                    $option.selected = true;
+                  }
+                  $sel.insertBefore($option, $sel.options[1]);
+                });
 
-            document.getElementsByTagName("canvas")[0].style.zIndex = '1';
-            document.getElementById('dialect_select').style.zIndex = '2';
-            document.getElementById('dialect_select').style.position = 'relative';
-            document.getElementById('dialect_select').style.top = '280px';
-            document.getElementById('dialect_select').style.left = '255px';
-            document.getElementById('dialect_select').style.width = '155px';
-        }
-        else{
-          document.getElementById("dialect_select").style.display = '';
-        }
-    
-        tweenSettings = game.add.tween(settingsPopup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
+                document.getElementsByTagName("canvas")[0].style.zIndex = '1';
+                document.getElementById('dialect_select').style.zIndex = '2';
+                document.getElementById('dialect_select').style.position = 'relative';
+                document.getElementById('dialect_select').style.top = '280px';
+                document.getElementById('dialect_select').style.left = '255px';
+                document.getElementById('dialect_select').style.width = '155px';
+            }
+            else{
+              document.getElementById("dialect_select").style.display = '';
+            }
+
+        }, this);
+        tweenset.start();
         settingsPopup.alpha = 1;
         blackscreen.visible = true; 
 
     },
     /** Save User Settings **/
     saveSettings: function () {
+        console.log('%c Saving settings ', 'background:green;color:white;');
         optionsMusic.play();
-        callAjax("saveUserSettings", "POST",{dialect: document.getElementById('dialect_select').value},function (result) {
+        console.log(mSliderw);
+        callAjax("saveUserSettings", "POST",{dialect: document.getElementById('dialect_select').value, musicPos: mSliderw, musicVol: bgMusicVol},function (result) {
             directButton.input.enabled = true;
             playButton.input.enabled = true;
             leaderButton.input.enabled = true;
@@ -233,7 +264,7 @@ MainScreen.prototype = {
             if(document.getElementById("dialect_select") != null ){
               document.getElementById("dialect_select").style.display = 'none';
             }  
-            //  Create a tween that will close the window, but only if it's not already tweening or closed
+
             tweenSettings = game.add.tween(settingsPopup.scale).to( { x: 0.1, y: 0.1 }, 500, Phaser.Easing.Elastic.In, true);
             settingsPopup.alpha = 0;
             blackscreen.visible = false; 
@@ -241,6 +272,7 @@ MainScreen.prototype = {
     },
     /** Close the settings pop up **/
     exitSettings: function () {
+        console.log('%c Close settings popup ', 'background:green;color:white;');
         optionsMusic.play();
         directButton.input.enabled = true;
         playButton.input.enabled = true;
@@ -255,7 +287,6 @@ MainScreen.prototype = {
           document.getElementById("dialect_select").style.display = 'none';
         }  
 
-        //  Create a tween that will close the window, but only if it's not already tweening or closed
         tweenSettings = game.add.tween(settingsPopup.scale).to( { x: 0.1, y: 0.1 }, 500, Phaser.Easing.Elastic.In, true);
         settingsPopup.alpha = 0;
         blackscreen.visible = false;
@@ -263,6 +294,7 @@ MainScreen.prototype = {
     },
 
     changeVolume: function (pointer) {
+        console.log('%c Changing volume ', 'background:green;color:white;');
         mSliderw = pointer.x;
         if(pointer.x > 160){
             bgMusic.mute = false;   
@@ -307,13 +339,17 @@ MainScreen.prototype = {
         exitButton.input.enabled = false;
     },
     directTranslate: function () {
+        console.log('%c Direct Translate state ', 'background:green;color:white;');
         playClickMS.play();
-        game.state.start('DirectLoad');
+        this.game.stateTransition.to('DirectLoad');
+        // game.state.start('DirectLoad');
     },
 
     startPlay: function () {
+        console.log('%c Play state ', 'background:green;color:white;');
         playClickMS.play();
-        game.state.start('Play');
+        this.game.stateTransition.to('Play');
+        // game.state.start('Play');
     },
 
     render: function () {

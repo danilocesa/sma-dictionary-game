@@ -1,4 +1,4 @@
-var backButton, dialectText,tweenBoard,board,boardGroup,grossText,plus,minus,plusText,minusText,randText,sentiButton = 2,submitButton,sentiText;
+var backButton, dialectText,tweenBoard,board,boardGroup,grossText,plus,minus,plusText,minusText,randText,sentiButton = 2,submitButton,sentiText,inputTranslate
 	DirectTranslate = function(){};
 
 DirectTranslate.prototype = {
@@ -12,14 +12,13 @@ DirectTranslate.prototype = {
 		backButton.scale.setTo(0.4,0.4);
 		backButton.inputEnabled = true;
         backButton.input.useHandCursor = true;
-
+		
         submitButton = this.add.button(this.world.centerX - 70, this.world.centerY + 190, 'submit',this.saveTranslate);
 		submitButton.scale.setTo(0.6,0.6);
 		submitButton.inputEnabled = false;
         submitButton.alpha = 0.5;
 
         boardGroup = this.add.group();
-        // boardGroup.width = 10;
         board = this.add.sprite(275 , -50, 'board');
        	board.width = 310;
         board.anchor.setTo(0.5, 0.5);
@@ -39,26 +38,20 @@ DirectTranslate.prototype = {
         var bar = this.add.graphics();
    		bar.beginFill(0x000000, 0.2);
     	bar.drawRect(115, (this.world.centerX) + 100 , 310, 130);
-    	if(document.getElementById('inputDirectTrans') != null){
-    		// new CoolElement(document.getElementById('inputDirectTrans')).remove();
-    		document.getElementById('inputDirectTrans').style.display = '';
-    		document.getElementById('inputDirectTrans').value = '';
-    	} else{
-    		var inputTranslate = document.createElement('input');
-			inputTranslate.type = 'text';
-			inputTranslate.id = 'inputDirectTrans';
-	        var main_content = document.getElementById('main-content'); 
-	        main_content.appendChild(inputTranslate);
-	        document.getElementsByTagName("canvas")[0].style.zIndex = '1';
-	        document.getElementById('inputDirectTrans').style.zIndex = '2';
-	        document.getElementById('inputDirectTrans').style.position = 'relative';
-	        document.getElementById('inputDirectTrans').style.top = '385px';
-	        document.getElementById('inputDirectTrans').style.left = '128px';
-	        document.getElementById('inputDirectTrans').style.width = '270px';
-	        document.getElementById('inputDirectTrans').style.paddingLeft = '10px';
-	        document.getElementById('inputDirectTrans').style.height = '30px';
-	        document.getElementById('inputDirectTrans').style.fontSize = '24px';
-    	}
+    	
+		inputTranslate = this.add.inputField(135, (this.world.centerX) + 110, {
+            font: '18px Arial',
+            fill: '#000',
+            fontWeight: 'bold',
+            width: 250,
+            padding: 8,
+            borderWidth: 3,
+            borderColor: '#000',
+            borderRadius: 6,
+            placeHolder: 'Translate',
+            textAlign: 'center',
+            zoom: true
+        });
 		
         plus = this.add.button(this.world.centerX - 115, this.world.centerY + 120, 'plus',this.sentiButton);
         plus.name = "plus";
@@ -82,22 +75,20 @@ DirectTranslate.prototype = {
        
 	},
 	update: function () {
-		document.getElementById("inputDirectTrans").onkeyup = function() {
-			if(this.value.length >= 2){
-				submitButton.inputEnabled = true;
-				submitButton.input.useHandCursor = true;
-				submitButton.alpha = 1;
-			} else{
-				submitButton.inputEnabled = false;
-				submitButton.input.useHandCursor = false;
-				submitButton.alpha = 0.5;
-			}
-		};
+		if(inputTranslate.value.length > 1){
+			submitButton.inputEnabled = true;
+			submitButton.input.useHandCursor = true;
+			submitButton.alpha = 1;
+		} else{
+			submitButton.inputEnabled = false;
+			submitButton.input.useHandCursor = false;
+			submitButton.alpha = 0.5;
+		}
 
-	}, // for realtime
+	},
 	backMain: function () {
-		document.getElementById('inputDirectTrans').style.display = 'none';
-		game.state.start('MainScreen');
+		this.game.stateTransition.to('MainScreen');
+		// game.state.start('MainScreen');
 	},
 	sentiButton: function (button) {
 		sentiButton = (button.name == 'plus') ? 1 : 0;
@@ -114,13 +105,12 @@ DirectTranslate.prototype = {
 		}
 	},
 	saveTranslate: function (button) {
-		if(document.getElementById('inputDirectTrans').value != ''){
+		if(inputTranslate.value != ''){
 			if(sentiButton != 2){
-				callAjax("saveTranslate", "POST",{ base_id: randText.base_id, translated: document.getElementById('inputDirectTrans').value, sentiment: sentiButton },function (result) {
-				if(result == 'success')
-					document.getElementById('inputDirectTrans').style.display = 'none';
-					game.state.start('DirectLoad');
-					// game.state.start('Direct Translate',true,false);
+				callAjax("saveTranslate", "POST",{ base_id: randText.base_id, translated: inputTranslate.value, sentiment: sentiButton,phase : 1 },function (result) {
+					if(result == 'success')
+						this.game.stateTransition.to('DirectLoad');
+						// game.state.start('DirectLoad');
 				});	
 			} else{
 				sentiText = game.add.text(game.world.centerX + 85,  game.world.centerY + 110, "", { font: "bold 12px Arial", fill: "red",wordWrap:true,wordWrapWidth:10});
