@@ -75,7 +75,7 @@ DirectTranslate.prototype = {
        
 	},
 	update: function () {
-		if(inputTranslate.value.length > 1){
+		if(inputTranslate.value.length > 0){
 			submitButton.inputEnabled = true;
 			submitButton.input.useHandCursor = true;
 			submitButton.alpha = 1;

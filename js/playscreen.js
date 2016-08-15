@@ -1,10 +1,11 @@
-var backButton,level = 1,arcadeInfo,levelText,jumbleWordsGroup,sentiGroup,gameState = null,continueButton,dialectText,sentiButton = 2,checkback = 0,sentiText,skipButton,inputTranslate,emitterLeft,emitterRight
+var backButton,level = 1,arcadeInfo,levelText,jumbleWordsGroup,sentiGroup,gameState = null,continueButton,dialectText,sentiButton = 2,checkback = 0,sentiText,skipButton,inputTranslate,emitterLeft,emitterRight,errorText = null,
 	PlayScreen = function(){};
 
 PlayScreen.prototype = {
 	preload : function() {
 		arcadeInfo = this.cache.getJSON('arcadeInfo'); 	
 		this.load.image('mapBG', './images/arcades/'+arcadeInfo.arcade_map);
+		console.log('%c Play Preload ', 'background:yellow;color:black;');
 	},
 	create: function () { 
 		if(checkback == 1){
@@ -12,12 +13,10 @@ PlayScreen.prototype = {
 			gameState = null;
 			game.state.restart();
 		}
-		optionsMusic = game.add.audio('optionsMusic');
 		failPlay = game.add.audio('failPlay');
 		successPlay = game.add.audio('successPlay');
 		stageCleared = game.add.audio('stageCleared');
 		flipMS = game.add.audio('flipMS');
-		console.log(arcadeInfo);
 		this.add.sprite(0, 0, 'mapBG');// Add background
 
 		backButton = this.add.button(10, 5, 'backButton',this.backMain);
@@ -103,6 +102,9 @@ PlayScreen.prototype = {
    		glossBar.beginFill(0x000000, 0.4);
     	glossBar.drawRect(25, (this.world.centerX) + 50 , 500, 130);
 
+
+    	hintText = game.add.text(35, (this.world.centerX) + 53 , 'Hint :', { font: "bold 16px Arial", fill: "#fff", align:"center", wordWrap:true, wordWrapWidth:480});
+
     	glossText = game.add.text(35, (this.world.centerX) + 75 , arcadeInfo.gloss, { font: "bold 16px Arial", fill: "#fff", align:"center", wordWrap:true, wordWrapWidth:480});
 
 
@@ -122,7 +124,7 @@ PlayScreen.prototype = {
 
 	},
 	update: function () {
-		if(inputTranslate.value.length > 1){
+		if(inputTranslate.value.length > 0){
 			submitButton.inputEnabled = true;
 			submitButton.input.useHandCursor = true;
 			submitButton.alpha = 1;
@@ -134,6 +136,7 @@ PlayScreen.prototype = {
 	},
 	start: function () {},
 	backMain: function () {
+		console.log('%c Back to MainScreen ', 'background:yellow;color:black;');
 		optionsMusic.play();
 		if(gameState == 'translate'){
 			checkback = 1;
@@ -141,58 +144,72 @@ PlayScreen.prototype = {
 		game.state.start('MainScreen');
 	},
 	skip: function () {
+		console.log('%c Skipping ', 'background:yellow;color:black;');
 		optionsMusic.play();
 		callAjax("deductScore", "GET",'',function (result) { game.state.start('PlayLoad'); });	
 	},
 	savePlay: function(){
+		console.log('%c Saving ', 'background:yellow;color:black;');
 		if(inputTranslate.value != ''){
+			errorText = game.add.text(185, (game.world.centerX) + 240, ' ', { font: "bold 18px Arial", fill: "red", align:"center"});
 			if(gameState != 'translate'){
-				//Check jumblewords
-				if(inputTranslate.value.toLowerCase() == arcadeInfo.synset_terms.toLowerCase() ){ //Correct Word
-					gameState = 'translate';
-					var blackscreen = game.add.graphics();
-			   		blackscreen.beginFill(0x000000, 0.7);
-			    	blackscreen.drawRect(0, 0, 550, 650);
-			    	continueButton = game.add.button(game.world.centerX - 90, game.world.centerY + 190, 'continue',function(){ game.state.start('Play',true,false); });
-					continueButton.scale.setTo(0.6,0.6);
-					continueButton.inputEnabled = true;
-			        continueButton.input.useHandCursor = true;
-	        		var successText = game.add.text(game.world.centerX - 105, 30, 'Correct!', { font: "bold 58px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
-	        		var successWords = game.add.text(game.world.centerX - 125, 100, "You've guessed the word.", { font: "bold 22px Arial", fill: "#fff", align:"left"});
-	        		var correctText = game.add.text(game.world.centerX - 65, 250, arcadeInfo.synset_terms, { font: "bold 58px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
-	        		var continueText = game.add.text(game.world.centerX - 165, game.world.centerY + 150, 'Translate the word to move next level', { font: "bold 20px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
-					callAjax("saveScore", "POST",{ guessed :1 },function (result) {});	
-
-					stageCleared.play();
-					emitterLeft = game.add.emitter(70, -20, 200);
-
-				    //  Here we're passing an array of image keys. It will pick one at random when emitting a new particle.
-				    emitterLeft.makeParticles(['confet1', 'confet2', 'confet3']);
-
-				    emitterLeft.start(false, 5000, 50);
-
-				    emitterRight = game.add.emitter(480, -20, 200);
-
-				    //  Here we're passing an array of image keys. It will pick one at random when emitting a new particle.
-				    emitterRight.makeParticles(['confet1', 'confet2', 'confet3']);
-
-				    emitterRight.start(false, 5000, 50);
-
-				} else { //False
+				errorText.setText(' ');
+				//Check alphanumeric
+				if(! /^[a-zA-Z\s]*$/.test(inputTranslate.value.toLowerCase())){
 					failPlay.play();
 					game.plugins.screenShake.shake(7);
-					inputTranslate.setText('Incorrect guess!');
-				}
+					inputTranslate.setText('');
+					errorText.setText('Letters Only');
+					setTimeout(function(){ errorText.setText(' '); },1000); 
+				} else{
+					//Check jumblewords
+					if(inputTranslate.value.toLowerCase() == arcadeInfo.synset_terms.toLowerCase() ){ //Correct Word
+						gameState = 'translate';
+						var blackscreen = game.add.graphics();
+				   		blackscreen.beginFill(0x000000, 0.7);
+				    	blackscreen.drawRect(0, 0, 550, 650);
+				    	continueButton = game.add.button(game.world.centerX - 90, game.world.centerY + 190, 'continue',function(){ game.state.start('Play',true,false); });
+						continueButton.scale.setTo(0.6,0.6);
+						continueButton.inputEnabled = true;
+				        continueButton.input.useHandCursor = true;
+		        		var successText = game.add.text(game.world.centerX - 105, 30, 'Correct!', { font: "bold 58px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
+		        		var successWords = game.add.text(game.world.centerX - 125, 100, "You've guessed the word.", { font: "bold 22px Arial", fill: "#fff", align:"left"});
+		        		var correctText = game.add.text(game.world.centerX - 65, 250, arcadeInfo.synset_terms, { font: "bold 58px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
+		        		var continueText = game.add.text(game.world.centerX - 165, game.world.centerY + 150, 'Translate the word to move next level', { font: "bold 20px Arial", fill: "#fff", align:"center", boundsAlignH: "center", boundsAlignV: "middle"});
+						callAjax("saveScore", "POST",{ guessed :1 },function (result) {});	
+
+						stageCleared.play();
+						emitterLeft = game.add.emitter(70, -20, 200);
+
+					    //  Here we're passing an array of image keys. It will pick one at random when emitting a new particle.
+					    emitterLeft.makeParticles(['confet1', 'confet2', 'confet3']);
+
+					    emitterLeft.start(false, 5000, 50);
+
+					    emitterRight = game.add.emitter(480, -20, 200);
+
+					    //  Here we're passing an array of image keys. It will pick one at random when emitting a new particle.
+					    emitterRight.makeParticles(['confet1', 'confet2', 'confet3']);
+
+					    emitterRight.start(false, 5000, 50);
+
+					} else { //False
+						failPlay.play();
+						game.plugins.screenShake.shake(7);
+						inputTranslate.setText('');
+						errorText.setText('Incorrect Guess!');
+						setTimeout(function(){ errorText.setText(' '); },1000); 
+					}
+				}	
 			} else{
 				if(sentiButton == 2){
-					sentiText = game.add.text(game.world.centerX - 150,  game.world.centerY + 280, "Please choose sentiment", { font: "bold 12px Arial", fill: "red",wordWrap:true,wordWrapWidth:200});
+					sentiText = game.add.text(game.world.centerX - 150,  game.world.centerY - 280, "Please choose sentiment", { font: "bold 12px Arial", fill: "red",wordWrap:true,wordWrapWidth:200});
 					failPlay.play();
 					game.plugins.screenShake.shake(7);
 					sentiText.text = 'Please choose sentiment';
 				} else {
 					callAjax("saveTranslate", "POST",{ base_id: arcadeInfo.base_id, translated: inputTranslate.value, sentiment: sentiButton,uaTB:1,aLevel: arcadeInfo.arcade_id, phase: 1 },function (result) {
 						if(result == 'success')
-							bgMusic.volume = 0.4;
 							successPlay.play();
 							checkback = 0;
 							gameState = null;

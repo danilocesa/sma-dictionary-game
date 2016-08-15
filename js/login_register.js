@@ -157,7 +157,7 @@ var $registerShow = document.getElementsByClassName('register-show'),
        else{  //Errors
 
         if(result == 'nope'){
-         document.getElementById('forgot-errors').style.display ="block";
+         document.getElementById('forgot-errors').style.visibility ="visible";
         }
         /** Display Validation Error **/
         var myForm = document.getElementById("forgot-form"),
@@ -196,7 +196,7 @@ var $registerShow = document.getElementsByClassName('register-show'),
         Array.prototype.forEach.call($elements, function(el, i){
           el.getElementsByTagName('input')[0].style.border = '5px solid red';
         });
-        document.getElementById('login-errors').style.display ="block";
+        document.getElementById('login-errors').style.visibility ="visible";
       }
       else{
         new CoolElement(document.getElementById('black-screen')).remove();

@@ -62,7 +62,7 @@
         </div>
         <div id="forgot-forms">
           <div id="forgot-errors">
-            <p>Incorrect Username</p>
+            <p>Incorrect Email Address</p>
           </div>
         <!--   <div id="forgot-success">
             <img src="images/success_registration.png" id="regSuccessDialog" />
@@ -71,8 +71,8 @@
           <form id="forgot-form">
             <input type="hidden" name="_token" value="" /> 
             <div class="forgot-input">
-              <label >Username</label>
-              <input type="text" name="user_name" maxlength="10" />
+              <label>Email</label>
+              <input type="text" name="email" />
               <p class="error-message"></p>
             </div>
             <div class="forgot-input">
@@ -125,19 +125,28 @@
               <p class="error-message"></p>
             </div>
             <div class="register-input">
-              <label class="tooltip">Terms & Conditions
-                <span class="tooltiptext">
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sem ligula, egestas vitae mi vitae, ultricies commodo libero. </p>
-                
-                  <p> Fusce imperdiet nisi vitae tellus tincidunt, vel convallis nunc hendrerit. Praesent nec nibh arcu. Aliquam eget accumsan ligula, ac mollis orci. </p> 
-                
-                Praesent et iaculis orci. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ullamcorper velit sed velit semper egestas. Vivamus dui ante, imperdiet vitae fringilla ac, varius non diam. Aenean euismod ipsum vitae lobortis sagittis. Duis faucibus libero nulla, non commodo tellus vehicula eu. Sed rhoncus sapien ut accumsan pretium. Curabitur condimentum eros urna, ac eleifend turpis finibus in. Nulla convallis accumsan ultrices. Quisque malesuada lobortis dolor et lobortis. Sed quis metus metus.</span>
-              </label>
+              <label >Terms & Conditions </label>
               <div class="checkbox-container">
                 <input type="checkbox" value="1" id="checkboxInput" name="terms_con" tabindex="6" />
                 <label for="checkboxInput"></label>
                 <p class="error-message"></p>
               </div>
+               <label id="view-terms" class="tooltip">View
+               <span class="tooltiptext">
+                 <h2>Fountainhead Technologies Terms of Service</h2>
+                 <ol>
+                   <li>Terms</li>
+                   <p>By accessing the website at http://fountainheadtechnologies.com, you are agreeing to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site. The materials contained in this website are protected by applicable copyright and trademark law.</p>
+                   <li>Disclaimer</li>
+                   <p>a. The materials on Fountainhead Technologies's website are provided on an 'as is' basis. Fountainhead Technologies makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
+                   <p>b. Further, Fountainhead Technologies does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its website or otherwise relating to such materials or on any sites linked to this site.</p>
+                   <li>Modifications</li>
+                   <p>Fountainhead Technologies may revise these terms of service for its website at any time without notice. By using this website you are agreeing to be bound by the then current version of these terms of service.</p>
+                   <li>Governing Law</li>
+                   <p>These terms and conditions are governed by and construed in accordance with the laws of Quezon City, Philippines and you irrevocably submit to the exclusive jurisdiction of the courts in that State or location.</p>
+                 </ol>
+                </span>
+                </label>
             </div>
             <div class="register-btn">
               <div class="register-cancel">

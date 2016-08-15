@@ -12,7 +12,7 @@ function callAjax(url, method,data = null,callback){
         callback(JSON.parse(request.responseText));
       } 
       else if(request.status >= 500){
-        // location.reload();
+        location.reload();
         console.log('%c Error on AJAX: 500 Internal Error','background:red;color:white;');
       }
       else { //error

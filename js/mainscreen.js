@@ -15,18 +15,26 @@ MainScreen.prototype = {
     },
 
     create: function () {
-        bgMusic.play();
+        optionsMusic = game.add.audio('optionsMusic');
+        playClickMS = game.add.audio('playClickMS');
+        if(! bgMusic.isPlaying){
+            bgMusic.play();
+        }
+        
         bgMusic.loop = true;
         if(userSettings.music_volume || userSettings.setting_music ){
             bgMusic.volume = userSettings.music_volume;
             mSliderw = userSettings.setting_music;
+            optionsMusic.volume = userSettings.music_volume;
+            playClickMS.volume = userSettings.music_volume;
         }  else {
             bgMusic.volume = 1;
+            optionsMusic.volume = 1;
+            playClickMS.volume = 1;
             mSliderw = 285;
         }
        
-        optionsMusic = game.add.audio('optionsMusic');
-        playClickMS = game.add.audio('playClickMS');
+       
         //Add Background Image
         this.add.sprite(0, 0, 'mainBG');
         //Add logo
@@ -196,6 +204,7 @@ MainScreen.prototype = {
     },
     /** Close the game **/
     closeApp: function () {
+        callAjax("deleteSession", "GET",'',function(result){});
         location.reload();
         // window.close();
     },
@@ -254,7 +263,6 @@ MainScreen.prototype = {
     saveSettings: function () {
         console.log('%c Saving settings ', 'background:green;color:white;');
         optionsMusic.play();
-        console.log(mSliderw);
         callAjax("saveUserSettings", "POST",{dialect: document.getElementById('dialect_select').value, musicPos: mSliderw, musicVol: bgMusicVol},function (result) {
             directButton.input.enabled = true;
             playButton.input.enabled = true;
@@ -286,7 +294,7 @@ MainScreen.prototype = {
         if(document.getElementById("dialect_select") != null ){
           document.getElementById("dialect_select").style.display = 'none';
         }  
-
+        mSliderw = userSettings.setting_music;
         tweenSettings = game.add.tween(settingsPopup.scale).to( { x: 0.1, y: 0.1 }, 500, Phaser.Easing.Elastic.In, true);
         settingsPopup.alpha = 0;
         blackscreen.visible = false;
@@ -301,34 +309,51 @@ MainScreen.prototype = {
         }
         if (pointer.x <= 160){
             bgMusic.mute = true;
+            bgMusicVol = 0;
+            optionsMusic.volume = 0;
+            playClickMS.volume = 0;
         }
         else if (pointer.x <= 280 && pointer.x >= 270){
             bgMusic.volume = 0.7;
             bgMusicVol = 0.7;
+            optionsMusic.volume = 0.7;
+            playClickMS.volume = 0.7;
         }
         else if (pointer.x <= 269 && pointer.x >= 250){
             bgMusic.volume = 0.6;
             bgMusicVol = 0.6;
+            optionsMusic.volume = 0.6;
+            playClickMS.volume = 0.6;
         }
         else if (pointer.x <= 249 && pointer.x >= 230){
             bgMusic.volume = 0.5;
             bgMusicVol = 0.5;
+            optionsMusic.volume = 0.5;
+            playClickMS.volume = 0.5;
         }
         else if (pointer.x <= 229 && pointer.x >= 210){
             bgMusic.volume = 0.4;
             bgMusicVol = 0.4;
+            optionsMusic.volume = 0.4;
+            playClickMS.volume = 0.4;
         }
         else if (pointer.x <= 209 && pointer.x >= 199){
             bgMusic.volume = 0.3;
             bgMusicVol = 0.3;
+            optionsMusic.volume = 0.3;
+            playClickMS.volume = 0.3;
         }
         else if (pointer.x <= 198 && pointer.x > 161){
             bgMusic.volume = 0.2;
             bgMusicVol = 0.2;
+            optionsMusic.volume = 0.2;
+            playClickMS.volume = 0.2;
         }
         else{
             bgMusic.volume = 1;  
             bgMusicVol = 1;
+            optionsMusic.volume = 1;
+            playClickMS.volume = 1;
         }
     },
     disableButton: function (){
