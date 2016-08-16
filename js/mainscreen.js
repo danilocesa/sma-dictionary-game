@@ -204,8 +204,13 @@ MainScreen.prototype = {
     },
     /** Close the game **/
     closeApp: function () {
-        callAjax("deleteSession", "GET",'',function(result){});
-        location.reload();
+        callAjax("deleteSession", "GET",'',function(result){
+            if(result){
+                location.reload();
+            }
+
+        });
+        
         // window.close();
     },
 
